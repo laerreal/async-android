@@ -99,6 +99,9 @@ public class ASyncActivity extends FragmentActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        new SMSSenderThread().start();
+
         setContentView(R.layout.activity_async);
 
         mContactsList = (ListView) findViewById(R.id.listView1);
