@@ -14,7 +14,9 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 public class ASyncActivity extends FragmentActivity
@@ -100,9 +102,15 @@ public class ASyncActivity extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        new SMSSenderThread(this).start();
-
         setContentView(R.layout.activity_async);
+
+        final Button btSendSMS = (Button) findViewById(R.id.btSendSMS);
+        btSendSMS.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new SMSSenderThread(btSendSMS.getContext()).start();
+            }
+        });
 
         mContactsList = (ListView) findViewById(R.id.listView1);
 
