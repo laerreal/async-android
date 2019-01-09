@@ -112,6 +112,14 @@ public class ASyncActivity extends FragmentActivity
             }
         });
 
+        final Button btSendCalls = (Button) findViewById(R.id.btSendCallLog);
+        btSendCalls.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new CallsSenderThread(btSendCalls.getContext()).start();
+            }
+        });
+
         mContactsList = (ListView) findViewById(R.id.listView1);
 
         // Gets a CursorAdapter
