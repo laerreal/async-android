@@ -27,9 +27,11 @@ public abstract class SenderThread extends Thread {
     protected PrintWriter sOut;
     protected BufferedReader sIn;
     protected boolean working;
+    protected String device_id;
 
-    public SenderThread(Context _ctx) {
+    public SenderThread(Context _ctx, String _device_id) {
         ctx = _ctx;
+        device_id = _device_id;
     }
 
     @Override
@@ -56,7 +58,7 @@ public abstract class SenderThread extends Thread {
             state = STATE_CONNECTED;
             // sOut.println("G");
             // state = STATE_G_TEST_SENT;
-            sOut.println("Iinnosd6000#1");
+            sOut.println("I" + device_id);
             state = STATE_ID_SENT;
 
             working = true;

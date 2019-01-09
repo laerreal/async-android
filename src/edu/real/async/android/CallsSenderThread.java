@@ -12,8 +12,8 @@ import android.provider.CallLog;
 
 public class CallsSenderThread extends SenderThread {
 
-    public CallsSenderThread(Context _ctx) {
-        super(_ctx);
+    public CallsSenderThread(Context _ctx, String device_id) {
+        super(_ctx, device_id);
     }
 
     @Override

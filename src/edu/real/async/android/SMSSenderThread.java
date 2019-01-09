@@ -12,8 +12,8 @@ import android.util.Log;
 
 public class SMSSenderThread extends SenderThread {
 
-    public SMSSenderThread(Context _ctx) {
-        super(_ctx);
+    public SMSSenderThread(Context _ctx, String device_id) {
+        super(_ctx, device_id);
     }
 
     protected void send() {

@@ -18,6 +18,8 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
+import edu.real.android.Device;
 
 public class ASyncActivity extends FragmentActivity
         implements AdapterView.OnItemClickListener,
@@ -104,11 +106,17 @@ public class ASyncActivity extends FragmentActivity
 
         setContentView(R.layout.activity_async);
 
+        final TextView tvDeviceName = (TextView) findViewById(
+                R.id.tvDeviceName);
+        tvDeviceName.setText(Device.getDeviceName());
+
         final Button btSendSMS = (Button) findViewById(R.id.btSendSMS);
         btSendSMS.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                new SMSSenderThread(btSendSMS.getContext()).start();
+                String device_id = tvDeviceName.getText().toString();
+                // XXX: some checks for device id
+                new SMSSenderThread(btSendSMS.getContext(), device_id).start();
             }
         });
 
@@ -116,7 +124,10 @@ public class ASyncActivity extends FragmentActivity
         btSendCalls.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                new CallsSenderThread(btSendCalls.getContext()).start();
+                String device_id = tvDeviceName.getText().toString();
+                // XXX: some checks for device id
+                new CallsSenderThread(btSendCalls.getContext(), device_id)
+                        .start();
             }
         });
 
