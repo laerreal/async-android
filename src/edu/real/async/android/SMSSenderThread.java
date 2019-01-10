@@ -22,7 +22,7 @@ public class SMSSenderThread extends SenderThread {
         // public static final String SENT = "content://sms/sent";
         // public static final String DRAFT = "content://sms/draft";
         Cursor cursor = ctx.getContentResolver().query(
-                Uri.parse("content://sms/inbox"), null, null, null, null);
+                Uri.parse("content://sms"), null, null, null, null);
 
         if (cursor.moveToFirst()) { // must check the result to prevent
                                     // exception
