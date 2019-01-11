@@ -131,6 +131,18 @@ public class ASyncActivity extends FragmentActivity
             }
         });
 
+        final Button btSendContacts =
+                (Button) findViewById(R.id.btSendContacts);
+        btSendContacts.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String device_id = tvDeviceName.getText().toString();
+                // XXX: some checks for device id
+                new PersonsSenderThread(btSendContacts.getContext(), device_id)
+                        .start();
+            }
+        });
+
         mContactsList = (ListView) findViewById(R.id.listView1);
 
         // Gets a CursorAdapter

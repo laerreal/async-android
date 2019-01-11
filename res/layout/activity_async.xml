@@ -36,17 +36,29 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send:" />
+
+        <Button
+            android:id="@+id/btSendContacts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Contacts" />
+
         <Button
             android:id="@+id/btSendCallLog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send CallLog" />
+            android:text="Call Log" />
 
         <Button
             android:id="@+id/btSendSMS"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send SMS" />
+            android:text="SMS" />
 
     </LinearLayout>
 
