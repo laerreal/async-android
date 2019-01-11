@@ -98,4 +98,83 @@ public abstract class SenderThread extends Thread {
 
     protected abstract void send();
 
+    protected void sendCursor(
+            Cursor cursor,
+            String packet_prefix,
+            String expected_response,
+            String data_description,
+            String log_tag)
+    {
+        if (cursor.moveToFirst()) { // must check the result to prevent
+            // exception
+            do {
+                JSONObject o_item = new JSONObject();
+                for (int idx = 0; idx < cursor.getColumnCount(); idx++) {
+                    try {
+                        o_item.put(cursor.getColumnName(idx),
+                                cursor.getString(idx));
+                    } catch (JSONException e) {
+                        Log.e(log_tag, "Putting to JSONObject failed. "
+                                + e.getMessage());
+                        o_item = null;
+                        break;
+                    }
+                }
+                if (o_item == null) {
+                    continue;
+                }
+                sOut.println(packet_prefix + o_item.toString());
+                String resp;
+                try {
+                    resp = sIn.readLine();
+                } catch (IOException e) {
+                    Log.e(log_tag, "Server response reading failed. "
+                            + e.getMessage());
+                    working = false;
+                    break;
+                }
+                if (resp == null) {
+                    Log.e(log_tag,
+                            "Server responsed nothing after sending of "
+                                    + data_description + ": "
+                                    + resp);
+                    working = false;
+                    break;
+                }
+                if (!resp.equals(expected_response)) {
+                    Log.e(log_tag,
+                            "Unexpected server response after sending of "
+                                    + data_description + ": "
+                                    + resp);
+                    working = false;
+                    break;
+                }
+            } while (cursor.moveToNext());
+        } else {
+            // empty box, no SMS
+        }
+    }
+
+    protected void sendAllContent(Uri uri,
+            String packet_prefix,
+            String expected_response,
+            String data_description,
+            String log_tag)
+    {
+        Cursor cursor = ctx.getContentResolver().query(
+               uri, null, null, null, null);
+        sendCursor(cursor, packet_prefix, expected_response, data_description,
+                    log_tag);
+    }
+
+    protected void sendAllContent(String uri_str,
+            String packet_prefix,
+            String expected_response,
+            String data_description,
+            String log_tag)
+    {
+        Uri uri = Uri.parse(uri_str);
+        sendAllContent(uri, packet_prefix, expected_response, data_description,
+                    log_tag);
+    }
 }
