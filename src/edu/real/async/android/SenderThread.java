@@ -11,7 +11,10 @@ import java.net.Socket;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
 import android.net.Uri;
+import android.os.Build;
+import android.util.Base64;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -98,6 +101,15 @@ public abstract class SenderThread extends Thread {
 
     protected abstract void send();
 
+    protected Object wrap2Base64(byte[] blob)
+    {
+        String s = Base64.encodeToString(blob, Base64.DEFAULT);
+        JSONObject ret = new JSONObject();
+        ret.put("encoding", "base64");
+        ret.put("data", s);
+        return ret;
+    }
+
     protected void sendCursor(
             Cursor cursor,
             String packet_prefix,
@@ -110,9 +122,36 @@ public abstract class SenderThread extends Thread {
             do {
                 JSONObject o_item = new JSONObject();
                 for (int idx = 0; idx < cursor.getColumnCount(); idx++) {
+                    Object value;
                     try {
-                        o_item.put(cursor.getColumnName(idx),
-                                cursor.getString(idx));
+                        if (Build.VERSION.SDK_INT >= 11) {
+                            // getType is added in API level 11
+                            if (cursor.getType(idx) == Cursor.FIELD_TYPE_BLOB)
+                            {
+                                byte blob[] = cursor.getBlob(idx);
+                                value = wrap2Base64(blob);
+                            } else {
+                                value = cursor.getString(idx);
+                            }
+                        } else {
+                            try {
+                                value = cursor.getString(idx);
+                            } catch (SQLiteException e) {
+                                // Sometimes, converting BLOB to string results
+                                // in SQLiteException. There is no known way
+                                // to get field way type before API 11.
+                                byte blob[] = cursor.getBlob(idx);
+                                value = wrap2Base64(blob);
+                            }
+                        }
+                    } catch (Exception e) {
+                        Log.e(log_tag, "Getting cell value failed. "
+                                + e.getMessage());
+                        o_item = null;
+                        break;
+                    }
+                    try {
+                        o_item.put(cursor.getColumnName(idx), value);
                     } catch (JSONException e) {
                         Log.e(log_tag, "Putting to JSONObject failed. "
                                 + e.getMessage());
